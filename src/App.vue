@@ -43,11 +43,16 @@
         </button>
       </section>
 
-      <hr class="w-full border-t border-gray-600 my-4" />
+      <template v-if="tickers.length > 0">
+      <hr  class="w-full border-t border-gray-600 my-4" />
       <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
         <div
             v-for="t in tickers"
             :key="t.name"
+            @click="sel = t"
+            :class="{
+              'border-4': sel === t
+            }"
             class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
         >
           <div class="px-4 py-5 sm:p-6 text-center">
@@ -60,7 +65,7 @@
           </div>
           <div class="w-full border-t border-gray-200"></div>
           <button
-              @click="handleDelete"
+              @click.stop="handleDelete(t)"
               class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
           >
             <svg
@@ -81,9 +86,10 @@
         </div>
       </dl>
       <hr class="w-full border-t border-gray-600 my-4" />
-      <section class="relative">
+      </template>
+      <section v-if="sel" class="relative">
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
-          VUE - USD
+          {{ sel.name }} - USD
         </h3>
         <div class="flex items-end border-gray-600 border-b border-l h-64">
           <div
@@ -101,6 +107,7 @@
         </div>
         <button
             type="button"
+            @click="sel = null"
             class="absolute top-0 right-0"
         >
           <svg
@@ -143,8 +150,8 @@ export default {
         {name: "DEMO1", price: "1"},
         {name: "DEMO2", price: "2"},
         {name: "DEMO3", price: "2"},
-
-      ]
+      ],
+      sel: null
     }
   },
   methods: {
@@ -155,10 +162,18 @@ export default {
         price: "1"
       };
       this.tickers.push(newTicker);
+      setInterval(async () => {
+        const f = await fetch(
+            `https://min-api.cryptocompare.com/data/price?fsym=${newTicker.name}&tsyms=USD&api_key=e69418c39b0f6edc4d04306b466043f649757ef69ea47f8559ae0bebceb463aa`
+        );
+        const data = await f.json();
+        console.log(data)
+      },3000)
       this.ticker = "";
+
     },
-    handleDelete() {
-      this.tickers = this.tickers.filter()
+    handleDelete(tickerToRemove) {
+      this.tickers = this.tickers.filter(t => t != tickerToRemove )
     }
   },
 }
