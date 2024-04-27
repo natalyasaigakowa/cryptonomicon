@@ -60,6 +60,7 @@
           </div>
           <div class="w-full border-t border-gray-200"></div>
           <button
+              @click="handleDelete"
               class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
           >
             <svg
@@ -73,7 +74,9 @@
                   fill-rule="evenodd"
                   d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
                   clip-rule="evenodd"
-              ></path></svg>Удалить
+              ></path>
+            </svg>
+            Удалить
           </button>
         </div>
       </dl>
@@ -128,6 +131,8 @@
 </template>
 
 <script>
+import {handleError} from "vue";
+
 export default {
   name: 'App',
 
@@ -143,6 +148,7 @@ export default {
     }
   },
   methods: {
+    handleError,
     add() {
       const newTicker = {
         name: this.ticker,
@@ -150,6 +156,9 @@ export default {
       };
       this.tickers.push(newTicker);
       this.ticker = "";
+    },
+    handleDelete() {
+      this.tickers = this.tickers.filter()
     }
   },
 }
