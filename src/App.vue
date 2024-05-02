@@ -1,7 +1,6 @@
 <template>
   <div class="container mx-auto flex flex-col items-center bg-gray-100 p-4">
     <div class="container">
-      <div class="w-full my-4"></div>
       <section>
         <div class="flex">
           <div class="max-w-xs">
@@ -19,6 +18,21 @@
                   placeholder="Например DOGE"
               />
             </div>
+            <div class="flex bg-white shadow-md p-1 rounded-md shadow-md flex-wrap">
+            <span class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer">
+              BTC
+            </span>
+              <span class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer">
+              DOGE
+            </span>
+              <span class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer">
+              BCH
+            </span>
+              <span class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer">
+              CHD
+            </span>
+            </div>
+            <div class="text-sm text-red-600">Такой тикер уже добавлен</div>
           </div>
         </div>
         <button
@@ -44,49 +58,46 @@
       </section>
 
       <template v-if="tickers.length > 0">
-      <hr  class="w-full border-t border-gray-600 my-4" />
-      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
-        <div
-            v-for="t in tickers"
-            :key="t.name"
-            @click="sel = t"
-            :class="{
-              'border-4': sel === t
-            }"
-            class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
-        >
-          <div class="px-4 py-5 sm:p-6 text-center">
-            <dt class="text-sm font-medium text-gray-500 truncate">
-              {{ t.name }} - USD
-            </dt>
-            <dd class="mt-1 text-3xl font-semibold text-gray-900">
-              {{ t.price }}
-            </dd>
-          </div>
-          <div class="w-full border-t border-gray-200"></div>
-          <button
-              @click.stop="handleDelete(t)"
-              class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
+        <hr class="w-full border-t border-gray-600 my-4" />
+        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+          <div
+              v-for="t in tickers"
+              :key="t.name"
+              @click="sel = t"
+              :class="{'border-4': sel === t}"
+              class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
           >
-            <svg
-                class="h-5 w-5"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="#718096"
-                aria-hidden="true"
+            <div class="px-4 py-5 sm:p-6 text-center">
+              <dt class="text-sm font-medium text-gray-500 truncate">
+                {{ t.name }} - USD
+              </dt>
+              <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                {{ t.price }}
+              </dd>
+            </div>
+            <div class="w-full border-t border-gray-200"></div>
+            <button
+                @click.stop="handleDelete(t)"
+                class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
             >
-              <path
-                  fill-rule="evenodd"
-                  d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                  clip-rule="evenodd"
-              ></path>
-            </svg>
-            Удалить
-          </button>
-        </div>
-      </dl>
-      <hr class="w-full border-t border-gray-600 my-4" />
+              <svg
+                  class="h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="#718096"
+                  aria-hidden="true"
+              >
+                <path
+                    fill-rule="evenodd"
+                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                    clip-rule="evenodd"
+                ></path></svg>Удалить
+            </button>
+          </div>
+        </dl>
+        <hr class="w-full border-t border-gray-600 my-4" />
       </template>
+
       <section v-if="sel" class="relative">
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
           {{ sel.name }} - USD
@@ -106,8 +117,8 @@
           ></div>
         </div>
         <button
-            type="button"
             @click="sel = null"
+            type="button"
             class="absolute top-0 right-0"
         >
           <svg
@@ -133,8 +144,6 @@
       </section>
     </div>
   </div>
-
-
 </template>
 
 <script>
@@ -145,31 +154,48 @@ export default {
 
   data () {
     return {
-      ticker: "hello",
-      tickers: [
-        {name: "DEMO1", price: "1"},
-        {name: "DEMO2", price: "2"},
-        {name: "DEMO3", price: "2"},
-      ],
-      sel: null
+      ticker: "",
+      tickers: [],
+      sel: null,
+      graph: []
     }
   },
+
+  created() {
+    const tickersData = localStorage.getItem("cryptonomicon-list");
+
+    if (tickersData) {this.tickers = JSON.parse(tickersData);}
+    this.tickers.forEach(ticker => {
+      this.subscribeToUpdates(ticker.name);
+    })
+  },
+
   methods: {
     handleError,
-    add() {
-      const newTicker = {
-        name: this.ticker,
-        price: "1"
-      };
-      this.tickers.push(newTicker);
+    subscribeToUpdates(tickerName) {
       setInterval(async () => {
         const f = await fetch(
-            `https://min-api.cryptocompare.com/data/price?fsym=${newTicker.name}&tsyms=USD&api_key=e69418c39b0f6edc4d04306b466043f649757ef69ea47f8559ae0bebceb463aa`
+            `https://min-api.cryptocompare.com/data/price?fsym=${tickerName}&tsyms=USD&api_key=e69418c39b0f6edc4d04306b466043f649757ef69ea47f8559ae0bebceb463aa`
         );
         const data = await f.json();
-        console.log(data)
-      },3000)
+        this.tickers.find(t => t.name === tickerName).price = data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2);
+        if (this.sel?.name === tickerName) {
+          this.graph.push(data.USD);
+        }
+      },5000);
       this.ticker = "";
+    },
+    add() {
+      const currentTicker = {
+        name: this.ticker,
+        price: "-"
+      };
+      this.tickers.push(currentTicker);
+      localStorage.setItem("cryptonomicon-list", JSON.stringify(this.tickers));
+      this.subscribeToUpdates(currentTicker.name);
+
+
+
 
     },
     handleDelete(tickerToRemove) {
