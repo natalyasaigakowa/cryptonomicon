@@ -75,7 +75,7 @@
         <hr class="w-full border-t border-gray-600 my-4" />
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           <div
-              v-for="t in filteredTickers"
+              v-for="t in pageinatedTickers"
               :key="t.name"
               @click="sel = t"
               :class="{'border-4': sel === t}"
@@ -116,8 +116,12 @@
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
           {{ sel.name }} - USD
         </h3>
-        <div class="flex items-end border-gray-600 border-b border-l h-64">
+        <div class="flex items-end border-gray-600 border-b border-l h-64"
+             ref="graph">
           <div
+              v-for="(bar, idx) in normalizedGraph"
+              :key="idx"
+              :style="{ height: `${bar}%` }"
               class="bg-purple-800 border w-10 h-24"
           ></div>
           <div
@@ -173,7 +177,6 @@ export default {
       graph: [],
       page: 1,
       filter: '',
-      hasNextPage: true
     };
   },
 
@@ -181,16 +184,12 @@ export default {
     const windowData = Object.fromEntries(
         new URL(window.location).searchParams.entries()
     );
-
-
     if (windowData.filter) {
       this.filter = windowData.filter;
     }
-
     if (windowData.page) {
       this.filter = windowData.page;
     }
-
     const tickersData = localStorage.getItem("cryptonomicon-list");
     if (tickersData) {this.tickers = JSON.parse(tickersData);}
     this.tickers.forEach(ticker => {
@@ -199,20 +198,40 @@ export default {
   },
 
   computed: {
+    startIndex () {
+      return (this.page - 1) * 6;
+    },
+    endIndex () {
+      return this.page * 6;
+    },
     filteredTickers() {
-      const start = (this.page - 1) * 6;
-      const end = this.page * 6;
+      return this.tickers.filter(ticker => ticker.name.includes(this.filter));
 
-      const filteredTickers = this.tickers.filter(ticker =>
-          ticker.name.includes(this.filter));
+    },
+    pageinatedTickers () {
+      return this.filteredTickers.slice(this.startIndex, this.endIndex);
+    },
 
-      this.hasNextPage = filteredTickers.length > end;
-      return filteredTickers.slice(start, end);
-    }
+    hasNextPage() {
+      return this.filteredTickers.length > this.endIndex;
+    },
+    normalizedGraph() {
+      const maxValue = Math.max(...this.graph);
+      const minValue = Math.min(...this.graph);
+
+      if (maxValue === minValue) {
+        return this.graph.map(() => 50);
+      }
+
+      return this.graph.map(
+          price => 5 + ((price - minValue) * 95) / (maxValue - minValue)
+      );
+    },
+
+
   },
 
   methods: {
-
     subscribeToUpdates(tickerName) {
       setInterval(async () => {
         const f = await fetch(
@@ -244,6 +263,7 @@ export default {
       this.tickers = this.tickers.filter(t => t != tickerToRemove )
     }
   },
+
   watch: {
     filter() {
       this.page = 1;
